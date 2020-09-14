@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Transition, animated } from 'react-spring/renderprops'
 import useMousePosition from './utils/useMousePosition'
-import { Block, BotContainer, BotHeader, BotIframeStyle } from './styles';
+import { Block, BotContainer, BotHeader, BotIframeStyle } from './styles'
+import useProduct from 'vtex.product-context/useProduct'
 
 import { useCssHandles } from 'vtex.css-handles'
 
@@ -26,6 +27,10 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   //initialText = DEFAULT_INITIALTEXT
 }) => {
 
+  const { product } = useProduct()
+
+
+
   const [outFlag, setOutFlag] = useState(false);
   const [reenterFlag, setReenterFlag] = useState(false);
   const [yPreviousMousePosition, setYPreviousMousePosition] = useState(100);
@@ -35,6 +40,11 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   const { x, y } = useMousePosition();
 
   const handles = useCssHandles(CSS_HANDLES)
+
+
+  useEffect(() => {
+    console.log(JSON.stringify(product.productId))
+  }, []);
 
   useEffect(() => {
     const hasMovedCursor = x !== 0 && y !== 0;
