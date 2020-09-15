@@ -1,8 +1,8 @@
 {
-  "countdown": {
-    "component": "Countdown"
+  "leiachatbot": {
+    "component": "leiachatbot"
   },
-  "countdown.title": {
+  "leiachatbot.title": {
     "component": "Title"
   }
 }

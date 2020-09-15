@@ -3,33 +3,25 @@ import { Transition, animated } from 'react-spring/renderprops'
 import useMousePosition from './utils/useMousePosition'
 import { Block, BotContainer, BotHeader, BotIframeStyle } from './styles'
 import useProduct from 'vtex.product-context/useProduct'
-
+import axios from 'axios'
 import { useCssHandles } from 'vtex.css-handles'
 
 const CSS_HANDLES = ['leiachatbot']
 
-interface LeiaChatBotProps {// Quais as propriedades serão passadas do editor para o bloco
+interface LeiaChatBotProps {
   avatar: string;
   chatbotName: string;
   callToAction: string;
   initialText: string;
 }
 
-const DEFAULT_AVATAR = "https://pm1.narvii.com/6685/ff2eb605bd90880d3b55d370cf932542d363cb8a_128.jpg"
-//const DEFAULT_CHATBOTNAME = "Leia"
-const DEFAULT_CALLTOACTION = "Olá, posso te ajudar?"
-//const DEFAULT_INITIALTEXT = "Olá, percebi que esta em dúvida sobre o produto, como posso ajudar?"
-
-const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({ 
-  avatar = DEFAULT_AVATAR, 
-  //chatbotName = DEFAULT_CHATBOTNAME, 
-  callToAction = DEFAULT_CALLTOACTION, 
-  //initialText = DEFAULT_INITIALTEXT
+const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
+  avatar,
+  chatbotName, 
+  callToAction,
 }) => {
 
   const { product } = useProduct()
-
-
 
   const [outFlag, setOutFlag] = useState(false);
   const [reenterFlag, setReenterFlag] = useState(false);
@@ -41,9 +33,17 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
 
   const handles = useCssHandles(CSS_HANDLES)
 
-
   useEffect(() => {
-    console.log(JSON.stringify(product.productId))
+    axios.get(
+      'https://zq9qbxud1d.execute-api.us-west-2.amazonaws.com/test/produtos',
+      {
+        data: {
+          queryStringParameters: {
+            productid: product.productId,
+          }
+        }
+      }
+    )
   }, []);
 
   useEffect(() => {
@@ -52,25 +52,25 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
     if (hasMovedCursor && !outFlag && y < 10 && yPreviousMousePosition >= 10) {
       setOutFlag(true);
       handleOpenBotOutPage();
-      console.log("saiu");
     }
     setYPreviousMousePosition(y);
 
   }, [outFlag, y, yPreviousMousePosition]);
 
   const handleOpenBotOutPage = useCallback(() => {
-    console.log("handleOpenBot");
-    setOpen(true)
-  }, []);
+    if (!open) {
+      setOpen(true)
+    }
+  }, [open]);
 
   const handleOpenBotHover = useCallback(() => {
-    console.log("handleOpenBot");
-    setHoverActivate(true)
-    setOpen(true)
-  }, []);
+    if (!open) {
+      setHoverActivate(true)
+      setOpen(true)
+    }
+  }, [open]);
 
   const handleMouseReenter = useCallback(() => {
-    console.log("handleMouseReenter");
     setReenterFlag(true)
   }, []);
 
@@ -84,7 +84,7 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
       <BotContainer >
         <BotHeader onMouseEnter={handleOpenBotHover}>
           <img src={avatar} alt="Chatbot avatar" className="botHeaderImage"></img>
-        <p>{callToAction}</p>
+          {open ? <strong>{chatbotName}</strong> : <p>{callToAction}</p>}
         </BotHeader>
         <Transition
           native
@@ -99,7 +99,7 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
             (props => (
               <animated.div style={props}>
                 <BotIframeStyle>
-                  <iframe src="https://master.d1suantyavgyv6.amplifyapp.com/" title="Leia ChatBot" width="100%" height="100%" frameBorder="0" />
+                  <iframe src={`https://master.d299xj4w1w2mhk.amplifyapp.com/`} title="Leia ChatBot" width="100%" height="100%" frameBorder="0" />
                 </BotIframeStyle>
               </animated.div>
             ))
@@ -110,7 +110,13 @@ const Countdown: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   )
 }
 
-Countdown.schema = {
+leiachatbot.defaultProps = {
+  avatar: "https://uploaddeimagens.com.br/images/002/879/928/full/leiachatbot.png?1600178253",
+  chatbotName: "Leia",
+  callToAction: "Olá, posso te ajudar?",
+}
+
+leiachatbot.schema = {
   title: 'editor.leiachatbot.title',
   description: 'editor.leiachatbot.description',
   type: 'object',
@@ -119,27 +125,18 @@ Countdown.schema = {
       title: 'Avatar',
       description: 'URL da imagem de avatar',
       type: 'string',
-      default: "https://pm1.narvii.com/6685/ff2eb605bd90880d3b55d370cf932542d363cb8a_128.jpg",
     },
     chatbotName: {
       title: 'Nome do chatbot',
       description: 'Nome que será usado pelo chatbot',
       type: 'string',
-      default: 'Leia',
     },
     callToAction: {
       title: 'Chamada',
       description: 'Texto de chamada do chatbot',
       type: 'string',
-      default: 'Olá, posso te ajudar?',
-    },
-    initialText: {
-      title: 'Texto inicial',
-      description: 'Texto mostrado no início da conversa',
-      type: 'string',
-      default: 'Olá, percebi que esta em dúvida sobre o produto, como posso ajudar?',
-    },
+    }
   },
 }
 
-export default Countdown
+export default leiachatbot

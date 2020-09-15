@@ -26,7 +26,7 @@ export const BotHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 6px;
-  background: blue;
+  background: #03044e;
   margin: 0;
   color: #fff;
   border-radius: 30px 0 0 0;
@@ -38,7 +38,12 @@ export const BotHeader = styled.div`
   }
 
   p {
-    margin: 16px;
+    margin-left: 16px;
+  }
+
+  strong {
+    margin-left: 16px;
+    font-size: 24px;
   }
 `;
 
