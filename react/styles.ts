@@ -49,6 +49,6 @@ export const BotHeader = styled.div`
 
 export const BotIframeStyle = styled.div`
   width: 300px;
-  height: 300px;
+  height: 600px;
   background: #fff;
 `;

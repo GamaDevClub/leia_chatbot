@@ -5,6 +5,7 @@ import { Block, BotContainer, BotHeader, BotIframeStyle } from './styles'
 import useProduct from 'vtex.product-context/useProduct'
 import axios from 'axios'
 import { useCssHandles } from 'vtex.css-handles'
+import Bot from './Bot'
 
 const CSS_HANDLES = ['leiachatbot']
 
@@ -17,7 +18,7 @@ interface LeiaChatBotProps {
 
 const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   avatar,
-  chatbotName, 
+  chatbotName,
   callToAction,
 }) => {
 
@@ -82,6 +83,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
       }
 
       <BotContainer >
+
         <BotHeader onMouseEnter={handleOpenBotHover}>
           <img src={avatar} alt="Chatbot avatar" className="botHeaderImage"></img>
           {open ? <strong>{chatbotName}</strong> : <p>{callToAction}</p>}
@@ -90,7 +92,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
           native
           items={open}
           from={{ height: 0 }}
-          enter={{ height: 300 }}
+          enter={{ height: 600 }}
           leave={{ height: 0 }}
         >
 
@@ -99,7 +101,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
             (props => (
               <animated.div style={props}>
                 <BotIframeStyle>
-                  <iframe src={`https://master.d299xj4w1w2mhk.amplifyapp.com/`} title="Leia ChatBot" width="100%" height="100%" frameBorder="0" />
+                  <Bot />
                 </BotIframeStyle>
               </animated.div>
             ))
