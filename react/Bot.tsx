@@ -1,10 +1,10 @@
-import React, { Component, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Amplify, { Interactions } from 'aws-amplify';
 import { ChatFeed, Message } from 'react-chat-ui';
 import './Bot.css';
 
-const API_KEY = 'XXXXXX'; // Informe a chave cognito da Leia
-console.log(API_KEY);
+const API_KEY = 'us-west-2:7e9e1657-489b-4317-87f9-18bd5d52c888'; // Informe a chave cognito da Leia
+//console.log(API_KEY);
 
 const styles = {
   bubbleStyles: {
@@ -51,109 +51,104 @@ Amplify.configure({
   }
 });
 
-class Bot extends Component<{ productId: number }> {
-  state = {
-    input: '',
-    finalMessage: '',
-    messages: [
-      new Message({
-        id: 1,
-        message: "Olá, como posso ajudá-lo hoje?",
-      })
-    ]
-  }
+interface IBotProps {
+  productId: string;
+}
 
-  _handleKeyPress = (e: any) => {
-    if (e.key === 'Enter') {
-      this.submitMessage()
-    }
-  }
+const Bot: React.FC<IBotProps> = ({ productId }) => {
 
-  onChange(e: any) {
-    const input = e.target.value
-    this.setState({
-      input
-    })
-  }
-
-  handleComplete = (err: any, confirmation: any) => {
-    if (err) {
-      alert('Algo deu errado com o bot! :(');
-      return;
-    }
-    alert('feito: ' + JSON.stringify(confirmation, null, 2));
-    return 'Viagem reservada. Obrigado! O que você gostaria de fazer depois?';
-  }
-
-  async submitMessage() {
-    const { input } = this.state
-    if (input === '') return
-    const message = new Message({
-      id: 0,
-      message: input,
-    });
-    let messages = [...this.state.messages, message]
-
-    this.setState({
-      messages,
-      input: ''
-    });
-
-    const response = await Interactions.send("leiabot_dev", input);
-    console.log(response);
-
-    const responseMessage = new Message({
+  const [input, setInput] = useState('')
+  const [messages, setMessages] = useState<Message[]>([
+    new Message({
       id: 1,
-      message: response.message,
-    });
+      message: "Olá, como posso ajudá-lo hoje?",
+    })
+  ])
 
-    messages = [...this.state.messages, responseMessage];
-    this.setState({ messages });
+  useEffect(() => {
+    //Send product id to AWS
 
-    if(response.responseCard !== 'undefined') {
-      console.log(response.responseCard.genericAttachments);
+    try {
+      Interactions.send("leiabot_dev", `id ${productId}`).then(response => { console.log(response) });
+    }
+    catch (e) {
+      console.log("Erro")
     }
 
-    if (response.dialogState === 'Fulfilled') {
-      if (response.intentName === 'BookHotel') {
-        const { slots: { CheckInDate, Location, Nights, RoomType } } = response;
-        const finalMessage = `Parabéns! Sua viagem para ${Location}  com um quarto ${RoomType} em ${CheckInDate} por ${Nights} dias foi reservada!!`;
-        this.setState({ finalMessage });
+  }, [])
+
+  const onChange = useCallback((e: any) => {
+    const input_ = e.target.value
+    setInput(input_)
+  }, [])
+
+
+  const submitMessage = useCallback(async (inputMessage: string) => {
+
+    if (inputMessage !== '') {
+      const message = new Message({
+        id: 0,
+        message: inputMessage,
+      });
+      let internMessages = [...messages, message]
+
+      setMessages(internMessages)
+
+
+      //Send message to AWS
+      const response = await Interactions.send("leiabot_dev", inputMessage);
+      console.log(response);
+
+      const responseMessage = new Message({
+        id: 1,
+        message: response.message,
+      });
+      internMessages = [...internMessages, responseMessage];
+      setMessages(internMessages);
+
+
+      if (response.responseCard !== 'undefined') {
+
       }
     }
+  }, [messages])
 
-  }
+  const _handleKeyPress = useCallback((e: any) => {
+    if (e.key === 'Enter') {
+      submitMessage(input)
+      setInput('')
+    }
+  }, [input, submitMessage])
 
-  render() {
-    return (
-      <div className="App">
-        <header style={styles.header}>
-          <p style={styles.headerTitle}>Bem-vindo ao seu bot Leia Wars!</p>
-        </header>
+  return (
+    <div className="App">
+      <header style={styles.header}>
+        <p style={styles.headerTitle}>Bem-vindo ao seu bot Leia Wars!</p>
+      </header>
 
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 10,
-          alignItems: 'center'
-        }}>
-          <h2>{this.state.finalMessage}</h2>
-          <ChatFeed
-            messages={this.state.messages}
-            hasInputField={false}
-            bubbleStyles={styles.bubbleStyles}
-          />
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 10,
+        alignItems: 'center'
+      }}>
+        {/* <h2>{this.state.finalMessage}</h2> */}
+        <ChatFeed
+          messages={messages}
+          hasInputField={false}
+          bubbleStyles={styles.bubbleStyles}
+        />
 
-          <input
-            onKeyPress={this._handleKeyPress}
-            onChange={this.onChange.bind(this)}
-            style={styles.input}
-            value={this.state.input}
-          />
-        </div>
+        <input
+          onKeyDown={e => _handleKeyPress(e)}
+          onChange={e => onChange(e)}
+          style={styles.input}
+          value={input}
+        />
       </div>
-    );
-  }
+    </div>
+  );
+
 }
 
 export default Bot;
