@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import Amplify, { Interactions } from 'aws-amplify';
 import { ChatFeed, Message } from 'react-chat-ui';
 import './Bot.css';
@@ -51,7 +51,7 @@ Amplify.configure({
   }
 });
 
-class Bot extends Component {
+class Bot extends Component<{ productId: number }> {
   state = {
     input: '',
     finalMessage: '',
@@ -98,6 +98,7 @@ class Bot extends Component {
       messages,
       input: ''
     });
+
     const response = await Interactions.send("leiabot_dev", input);
     console.log(response);
 
@@ -105,8 +106,13 @@ class Bot extends Component {
       id: 1,
       message: response.message,
     });
+
     messages = [...this.state.messages, responseMessage];
     this.setState({ messages });
+
+    if(response.responseCard !== 'undefined') {
+      console.log(response.responseCard.genericAttachments);
+    }
 
     if (response.dialogState === 'Fulfilled') {
       if (response.intentName === 'BookHotel') {
@@ -115,6 +121,7 @@ class Bot extends Component {
         this.setState({ finalMessage });
       }
     }
+
   }
 
   render() {

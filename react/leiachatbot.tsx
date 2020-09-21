@@ -101,7 +101,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
             (props => (
               <animated.div style={props}>
                 <BotIframeStyle>
-                  <Bot />
+                  <Bot productId={product.productId} />
                 </BotIframeStyle>
               </animated.div>
             ))
