@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Transition, animated } from 'react-spring/renderprops'
 import useMousePosition from './utils/useMousePosition'
-import { Block, BotContainer, BotHeader } from './styles'
+import { Block, BotContainer, BotHeader, PreBlock } from './styles'
 import useProduct from 'vtex.product-context/useProduct'
 import { useCssHandles } from 'vtex.css-handles'
 import ChatBot from './ChatBot';
@@ -73,7 +73,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
     <div className={`${handles.chatbot}`}>
       {
         outFlag && !reenterFlag && !hoverActivate &&
-        (<Block onMouseEnter={handleMouseReenter}></Block>)
+        (<><PreBlock/><Block onMouseEnter={handleMouseReenter}/></>)
       }
 
       <BotContainer >

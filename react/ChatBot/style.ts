@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-flow: column;
   height: 100%;
+  background: white;
 `;
 
 export const ChatFeedContainer = styled.div`

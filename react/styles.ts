@@ -1,15 +1,28 @@
 import styled from 'styled-components';
 
-export const Block = styled.div`
+export const PreBlock = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 10%;
   background: black;
   z-index: 1000;
   opacity: 0.5;
 `;
+
+export const Block = styled.div`
+  position: fixed;
+  top: 10%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  background: black;
+  z-index: 1000;
+  opacity: 0.5;
+`;
+
+
 
 export const BotContainer = styled.div`
   margin: 0;
