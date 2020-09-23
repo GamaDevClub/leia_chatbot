@@ -13,7 +13,7 @@ export const Block = styled.div`
 
 export const BotContainer = styled.div`
   margin: 0;
-  width: 300px;
+  width: 400px;
   position: fixed;
   bottom: 0;
   right: 0;
@@ -42,13 +42,14 @@ export const BotHeader = styled.div`
   }
 
   strong {
+    flex: 1;
     margin-left: 16px;
     font-size: 24px;
   }
 `;
 
 export const BotIframeStyle = styled.div`
-  width: 300px;
+  width: 350px;
   height: 300px;
   background: #fff;
 `;

@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Transition, animated } from 'react-spring/renderprops'
 import useMousePosition from './utils/useMousePosition'
-import { Block, BotContainer, BotHeader, BotIframeStyle } from './styles'
+import { Block, BotContainer, BotHeader } from './styles'
 import useProduct from 'vtex.product-context/useProduct'
-import axios from 'axios'
 import { useCssHandles } from 'vtex.css-handles'
+import ChatBot from './ChatBot';
+import { MdClose } from 'react-icons/md'
+
 
 const CSS_HANDLES = ['leiachatbot']
 
@@ -17,7 +19,7 @@ interface LeiaChatBotProps {
 
 const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   avatar,
-  chatbotName, 
+  chatbotName,
   callToAction,
 }) => {
 
@@ -32,19 +34,6 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   const { x, y } = useMousePosition();
 
   const handles = useCssHandles(CSS_HANDLES)
-
-  useEffect(() => {
-    axios.get(
-      'https://zq9qbxud1d.execute-api.us-west-2.amazonaws.com/test/produtos',
-      {
-        data: {
-          queryStringParameters: {
-            productid: product.productId,
-          }
-        }
-      }
-    )
-  }, []);
 
   useEffect(() => {
     const hasMovedCursor = x !== 0 && y !== 0;
@@ -70,6 +59,12 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
     }
   }, [open]);
 
+  const handleCloseBot = useCallback(() => {
+    if (open) {
+      setOpen(false)
+    }
+  }, [open]);
+
   const handleMouseReenter = useCallback(() => {
     setReenterFlag(true)
   }, []);
@@ -84,13 +79,14 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
       <BotContainer >
         <BotHeader onMouseEnter={handleOpenBotHover}>
           <img src={avatar} alt="Chatbot avatar" className="botHeaderImage"></img>
-          {open ? <strong>{chatbotName}</strong> : <p>{callToAction}</p>}
+          {open ? (<><strong>{chatbotName}</strong> <MdClose onClick={handleCloseBot} size={24}/></>) : <p>{callToAction}</p>}
+          
         </BotHeader>
         <Transition
           native
           items={open}
           from={{ height: 0 }}
-          enter={{ height: 300 }}
+          enter={{ height: 400 }}
           leave={{ height: 0 }}
         >
 
@@ -98,9 +94,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
             show &&
             (props => (
               <animated.div style={props}>
-                <BotIframeStyle>
-                  <iframe src={`https://master.d299xj4w1w2mhk.amplifyapp.com/`} title="Leia ChatBot" width="100%" height="100%" frameBorder="0" />
-                </BotIframeStyle>
+                  <ChatBot productId={product.productId}/>
               </animated.div>
             ))
           }
