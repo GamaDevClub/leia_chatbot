@@ -124,4 +124,6 @@ psd
 thumb
 sketch
 
+react/keys.ts
+
 # End of https://www.toptal.com/developers/gitignore/api/node,react

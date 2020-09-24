@@ -51,7 +51,7 @@ export const Card = styled.div`
     padding: 16px;
     display: block;
     width: 50%;
-    background: blue;
+    background: #0f0f0f;
     color: white;
     border-radius: 4px;
     text-decoration: none;

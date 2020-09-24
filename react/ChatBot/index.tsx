@@ -5,14 +5,13 @@ import { Container, InputMessageContainer, ChatFeedContainer } from './style';
 import { MdSend } from 'react-icons/md';
 import ChatFeed, { Message } from './ChatFeed';
 
-const API_KEY = 'us-west-2:7e9e1657-489b-4317-87f9-18bd5d52c888'; // Informe a chave cognito da Leia
-
+import { botKey } from '../Keys'//Modify key_example.ts with access key
 
 const bubbleStyles = {
   user: {
     styles: {
-      background: "#c2c2c2",
-      color: "white",
+      background: "#bfbfbf",
+      color: "black",
       marginLeft: "auto",
       marginRight: 0,
       borderRadius: "8px 8px 0px 8px",
@@ -20,7 +19,7 @@ const bubbleStyles = {
   },
   bot: {
     styles: {
-      background: "blue",
+      background: "#0f0f0f",
       color: "white",
     }
   }
@@ -28,7 +27,7 @@ const bubbleStyles = {
 
 Amplify.configure({
   Auth: {
-    identityPoolId: API_KEY,
+    identityPoolId: botKey,
     region: 'us-west-2'
   },
   Interactions: {
@@ -50,22 +49,25 @@ interface ICard {
 }
 
 interface IChatBotProps {
+  storeAccount: string;
   productId: number;
+  callToAction: string;
 }
 
-const ChatBot: React.FC<IChatBotProps> = ({ productId }) => {
+const ChatBot: React.FC<IChatBotProps> = ({ storeAccount, productId, callToAction }) => {
 
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>([
     {
       user: "bot",
-      text: "Olá, eu posso te ajudar",
+      text: callToAction,
     }
   ])
 
   useEffect(() => {
     //Send message to AWS
-    Interactions.send("leiabot_dev", String(productId)).then(response => { console.log(response) });
+    Interactions.send("leiabot_dev", `account ${storeAccount}`).then(response => { console.log(response) });
+    Interactions.send("leiabot_dev", `id ${productId}`).then(response => { console.log(response) });
   }, [])
 
   const onChange = useCallback((e: any) => {

@@ -14,13 +14,14 @@ interface LeiaChatBotProps {
   avatar: string;
   chatbotName: string;
   callToAction: string;
-  initialText: string;
+  storeAccount: string;
 }
 
 const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
   avatar,
   chatbotName,
   callToAction,
+  storeAccount,
 }) => {
 
   const { product } = useProduct()
@@ -73,14 +74,14 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
     <div className={`${handles.chatbot}`}>
       {
         outFlag && !reenterFlag && !hoverActivate &&
-        (<><PreBlock/><Block onMouseEnter={handleMouseReenter}/></>)
+        (<><PreBlock /><Block onMouseEnter={handleMouseReenter} /></>)
       }
 
       <BotContainer >
         <BotHeader onMouseEnter={handleOpenBotHover}>
           <img src={avatar} alt="Chatbot avatar" className="botHeaderImage"></img>
-          {open ? (<><strong>{chatbotName}</strong> <MdClose onClick={handleCloseBot} size={24}/></>) : <p>{callToAction}</p>}
-          
+          {open ? (<><strong>{chatbotName}</strong> <MdClose onClick={handleCloseBot} size={24} /></>) : <p>{callToAction}</p>}
+
         </BotHeader>
         <Transition
           native
@@ -94,7 +95,7 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
             show &&
             (props => (
               <animated.div style={props}>
-                  <ChatBot productId={product.productId}/>
+                <ChatBot storeAccount={storeAccount} productId={product.productId} callToAction={callToAction} />
               </animated.div>
             ))
           }
@@ -105,9 +106,10 @@ const leiachatbot: StorefrontFunctionComponent<LeiaChatBotProps> = ({
 }
 
 leiachatbot.defaultProps = {
-  avatar: "https://uploaddeimagens.com.br/images/002/879/928/full/leiachatbot.png?1600178253",
+  avatar: "https://uploaddeimagens.com.br/images/002/892/553/original/leia_chatbot_logo.jpg?1600904375",
   chatbotName: "Leia",
   callToAction: "Olá, posso te ajudar?",
+  storeAccount: "hiringcoders3",
 }
 
 leiachatbot.schema = {
@@ -128,6 +130,11 @@ leiachatbot.schema = {
     callToAction: {
       title: 'Chamada',
       description: 'Texto de chamada do chatbot',
+      type: 'string',
+    },
+    storeAccount: {
+      title: 'Store Account',
+      description: 'Nome da loja, usado para requisições',
       type: 'string',
     }
   },

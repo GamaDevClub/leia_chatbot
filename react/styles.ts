@@ -7,7 +7,7 @@ export const PreBlock = styled.div`
   width: 100%;
   height: 10%;
   background: black;
-  z-index: 1000;
+  z-index: 997;
   opacity: 0.5;
 `;
 
@@ -18,7 +18,7 @@ export const Block = styled.div`
   width: 100%;
   height: 90%;
   background: black;
-  z-index: 1000;
+  z-index: 997;
   opacity: 0.5;
 `;
 
@@ -30,7 +30,7 @@ export const BotContainer = styled.div`
   position: fixed;
   bottom: 0;
   right: 0;
-  z-index: 1001;
+  z-index: 998;
   border-radius: 30px 0 0 0;
   box-shadow: -6px 5px 24px -10px rgba(0,0,0,0.75);
 `;
@@ -39,7 +39,7 @@ export const BotHeader = styled.div`
   display: flex;
   align-items: center;
   padding: 6px;
-  background: #03044e;
+  background: #0f0f0f;
   margin: 0;
   color: #fff;
   border-radius: 30px 0 0 0;
