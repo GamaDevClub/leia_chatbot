@@ -64,11 +64,24 @@ const ChatBot: React.FC<IChatBotProps> = ({ storeAccount, productId, callToActio
     }
   ])
 
+
+
   useEffect(() => {
-    //Send message to AWS
-    Interactions.send("leiabot_dev", `account ${storeAccount}`).then(response => { console.log(response) });
-    Interactions.send("leiabot_dev", `id ${productId}`).then(response => { console.log(response) });
+
+    Interactions.send("leiabot_dev", `id ${productId}`).then(() => {
+      console.log(`id`)
+    });
+
+    setTimeout(() => {
+      Interactions.send("leiabot_dev", `account ${storeAccount}`).then(() => {
+        console.log(`account`)
+      });
+    }, 2000);
+
+    
   }, [])
+
+
 
   const onChange = useCallback((e: any) => {
     const input_ = e.target.value
@@ -90,7 +103,6 @@ const ChatBot: React.FC<IChatBotProps> = ({ storeAccount, productId, callToActio
 
       //Send message to AWS
       const response = await Interactions.send("leiabot_dev", inputMessage);
-      console.log(response);
 
       const responseMessage: Message = {
         user: "bot",
@@ -124,7 +136,6 @@ const ChatBot: React.FC<IChatBotProps> = ({ storeAccount, productId, callToActio
   }, [input, submitMessage])
 
   const handleButtonSubmit = useCallback(() => {
-    console.log('Passou')
     submitMessage(input)
     setInput('')
   }, [input, submitMessage])
@@ -132,7 +143,7 @@ const ChatBot: React.FC<IChatBotProps> = ({ storeAccount, productId, callToActio
   const messagesEndRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView(false);
+    messagesEndRef.current?.scrollIntoView(false);
   };
 
   useEffect(scrollToBottom, [messages]);
@@ -141,15 +152,15 @@ const ChatBot: React.FC<IChatBotProps> = ({ storeAccount, productId, callToActio
     <Container>
       <ChatFeedContainer>
         <ChatFeed messages={messages} bubbleStyles={bubbleStyles} />
-        <div ref={messagesEndRef}/>
+        <div ref={messagesEndRef} />
       </ChatFeedContainer>
       <InputMessageContainer>
         <input
-          onKeyDown={e => _handleKeyPress(e)}
+          onKeyPress={e => _handleKeyPress(e)}
           onChange={e => onChange(e)}
           value={input}
         />
-        <button onClick={handleButtonSubmit}><MdSend size={24}/></button>
+        <button onClick={handleButtonSubmit}><MdSend size={24} /></button>
       </InputMessageContainer>
     </Container>
   );
